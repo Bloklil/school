@@ -2,7 +2,6 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
@@ -34,8 +33,8 @@ public class FacultyController {
     }
 
     @DeleteMapping("{id}")
-    public Faculty daleteFaculty(@PathVariable Long id) {
-        return facultyService.deleteFaculty(id);
+    public void deleteFaculty(@PathVariable Long id) {
+        facultyService.deleteFaculty(id);
     }
 
     @GetMapping
@@ -43,7 +42,7 @@ public class FacultyController {
         return facultyService.getAllFaculties();
     }
 
-    @GetMapping("{by-color}")
+    @GetMapping("/filter")
     public Collection<Faculty> getFacultiesByColor(@RequestParam String color) {
         return facultyService.findByColor(color);
     }
