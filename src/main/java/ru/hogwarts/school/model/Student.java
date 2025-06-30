@@ -2,9 +2,11 @@ package ru.hogwarts.school.model;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
@@ -12,7 +14,7 @@ public class Student {
 
     @Id
     @GeneratedValue
-    @Schema(hidden = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String name;
     private int age;
@@ -21,6 +23,7 @@ public class Student {
     }
 
     public Student(Long id, String name, int age) {
+        this.id = id;
         this.name = name;
         this.age = age;
     }

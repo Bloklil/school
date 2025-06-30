@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.StudentNotFoundException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -13,7 +14,6 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    @Autowired
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
@@ -29,7 +29,7 @@ public class StudentService {
 
     public Student updateStudent(Long id, Student student) {
         if (!studentRepository.existsById(id)) {
-            return null;
+            throw new StudentNotFoundException(id);
         }
         student.setId(id);
         return studentRepository.save(student);

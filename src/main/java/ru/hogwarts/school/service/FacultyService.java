@@ -14,7 +14,6 @@ public class FacultyService {
 
     private final FacultyRepository facultyRepository;
 
-    @Autowired
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
@@ -44,10 +43,7 @@ public class FacultyService {
     }
 
     public List<Faculty> findByColor(String color) {
-        return facultyRepository.findAll()
-                .stream()
-                .filter(faculty -> faculty.getColor().equalsIgnoreCase(color))
-                .toList();
+        return facultyRepository.findByColorIgnoreCase(color);
     }
 
 }
