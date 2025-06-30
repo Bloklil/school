@@ -1,7 +1,7 @@
 package ru.hogwarts.school.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.FacultyNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
@@ -28,7 +28,7 @@ public class FacultyService {
 
     public Faculty updateFaculty(Long id, Faculty faculty) {
         if (!facultyRepository.existsById(id)) {
-            return null;
+            throw new FacultyNotFoundException(id);
         }
         faculty.setId(id);
         return facultyRepository.save(faculty);

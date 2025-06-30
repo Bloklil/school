@@ -13,7 +13,7 @@ import jakarta.persistence.Id;
 public class Student {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     private String name;
