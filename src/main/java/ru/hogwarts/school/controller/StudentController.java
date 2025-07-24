@@ -1,11 +1,13 @@
 package ru.hogwarts.school.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.exception.StudentNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,8 +37,9 @@ public class StudentController {
     }
 
     @DeleteMapping("{id}")
-    public void deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) throws IOException {
         studentService.deleteStudent(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

@@ -13,3 +13,5 @@ where age < 11;
 
 select * from student
 order by age asc;
+
+delete from avatar where student_id in (5, 6, 7, 8);
