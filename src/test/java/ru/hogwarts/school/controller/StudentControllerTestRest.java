@@ -3,7 +3,6 @@ package ru.hogwarts.school.controller;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -23,9 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase //временно для теста
 class StudentControllerTestRest {
 
     @LocalServerPort
@@ -47,6 +44,11 @@ class StudentControllerTestRest {
     private TestRestTemplate testRestTemplate;
     private Faculty savedFaculty;
 
+    @BeforeEach
+    void cleanBd() {
+        studentRepository.deleteAll();
+    }
+
     @DisplayName("Проверка не пустого контроллера")
     @Test
     public void contextLoads() throws Exception {
@@ -63,9 +65,7 @@ class StudentControllerTestRest {
     @DisplayName("Проверка на добавление студента")
     @Test
     public void createStudentTest() {
-        Student student = new Student();
-        student.setName("Волчок");
-        student.setAge(11);
+        Student student = new Student(null, "Волчок", 11);
 
         ResponseEntity<Student> response = testRestTemplate.postForEntity(getAddress(), student, Student.class);
 
@@ -80,9 +80,7 @@ class StudentControllerTestRest {
     @DisplayName("Проверка на получение студента по ID")
     @Test
     public void readStudentTest() {
-        Student student = new Student();
-        student.setName("Волчок");
-        student.setAge(11);
+        Student student = new Student(null, "Волчок", 11);
 
         studentRepository.save(student);
 
@@ -101,13 +99,8 @@ class StudentControllerTestRest {
     @DisplayName("Проверка на получение всех студентов")
     @Test
     public void readAllStudentsTest() {
-        Student student = new Student();
-        student.setName("Волчок");
-        student.setAge(11);
-
-        Student student1 = new Student();
-        student1.setName("Волк");
-        student1.setAge(12);
+        Student student = new Student(null, "Волчок", 11);
+        Student student1 = new Student(null, "Волк", 12);
 
         studentRepository.save(student);
         studentRepository.save(student1);
@@ -135,9 +128,7 @@ class StudentControllerTestRest {
     @DisplayName("Проверка на редактирование студента")
     @Test
     public void updateStudentTest() {
-        Student student = new Student();
-        student.setName("Волчок");
-        student.setAge(11);
+        Student student = new Student(null, "Волчок", 11);
 
         studentRepository.save(student);
         Long studentId = student.getId();
@@ -159,12 +150,10 @@ class StudentControllerTestRest {
                 .isEqualTo(student);
     }
 
-    @DisplayName("Проверка на удаление студента по идентификатору")
+    @DisplayName("Проверка на удаление студента по ID")
     @Test
     public void deleteStudentTest() {
-        Student student = new Student();
-        student.setName("Волк");
-        student.setAge(12);
+        Student student = new Student(null, "Волк", 12);
 
         studentRepository.save(student);
 
@@ -178,13 +167,8 @@ class StudentControllerTestRest {
     @DisplayName("Проверка на нахождение студента по году")
     @Test
     public void filterStudentByAgeTest() {
-        Student student = new Student();
-        student.setName("Волк");
-        student.setAge(4);
-
-        Student student1 = new Student();
-        student1.setName("Волчок");
-        student1.setAge(7);
+        Student student = new Student(null, "Волк", 4);
+        Student student1 = new Student(null, "Волчок", 7);
 
         studentRepository.save(student);
         studentRepository.save(student1);
@@ -205,13 +189,8 @@ class StudentControllerTestRest {
     @DisplayName("Проверка на нахождение студентов по годам")
     @Test
     public void filterStudentByAgeBetweenTest() {
-        Student student = new Student();
-        student.setName("Волк");
-        student.setAge(4);
-
-        Student student1 = new Student();
-        student1.setName("Волчок");
-        student1.setAge(7);
+        Student student = new Student(null, "Волк", 4);
+        Student student1 = new Student(null, "Волчок", 7);
 
         studentRepository.save(student);
         studentRepository.save(student1);
@@ -233,54 +212,43 @@ class StudentControllerTestRest {
     @DisplayName("Получение студентов по ID факультета")
     @Test
     public void getStudentsByFacultyIdTest() {
-        Faculty faculty = new Faculty();
-        faculty.setName("Пуффендуй");
-        faculty.setColor("Желтый");
+        Faculty faculty = new Faculty(null, "Пуффендуй", "Желтый");
         facultyRepository.save(faculty);
 
-        Student s1 = new Student();
-        s1.setName("Седрик");
-        s1.setAge(17);
+        Student s1 = new Student(null, "Седрик", 17);
         s1.setFaculty(faculty);
         studentRepository.save(s1);
 
-        Student s2 = new Student();
-        s2.setName("Ханна");
-        s2.setAge(16);
+        Student s2 = new Student(null, "Ханна", 16);
         s2.setFaculty(faculty);
         studentRepository.save(s2);
 
         ResponseEntity<List<Student>> response = testRestTemplate.exchange(
-                getAddress() + "/faculty/" + faculty.getId() + "/students",
-                HttpMethod.GET,
-                null,
+                getAddress() + "/faculty/" + faculty.getId() + "/students", HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<Student>>() {
                 }
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-      /*  assertThat(response.getBody()).hasSize(2);
-        assertThat(response.getBody())
+        Assertions.assertThat(response.getBody()).hasSize(2);
+        Assertions.assertThat(response.getBody())
                 .extracting(Student::getName)
-                .containsExactlyInAnyOrder("Седрик", "Ханна");*/
+                .containsExactlyInAnyOrder("Седрик", "Ханна");
     }
 
     @DisplayName("Получение факультета по ID студента")
     @Test
     public void getFacultyByStudentIdTest() {
-        Faculty faculty = new Faculty();
-        faculty.setName("Гриффиндор");
-        faculty.setColor("Красный");
+        Faculty faculty = new Faculty(null, "Гриффиндор", "Красный");
+
         facultyRepository.save(faculty);
 
-        Student student = new Student();
-        student.setName("Гарри Поттер");
-        student.setAge(11);
+        Student student = new Student(null, "Гарри Поттер", 11);
+
         student.setFaculty(faculty);
         studentRepository.save(student);
 
-        ResponseEntity<Faculty> response = testRestTemplate.getForEntity(
-                getAddress() + "/" + student.getId() + "/faculty",
+        ResponseEntity<Faculty> response = testRestTemplate.getForEntity(getAddress() + "/" + student.getId() + "/faculty",
                 Faculty.class
         );
 
@@ -301,5 +269,4 @@ class StudentControllerTestRest {
     private String getAddress() {
         return "http://localhost:" + port + "/student";
     }
-
 }
