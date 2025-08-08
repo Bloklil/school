@@ -1,33 +1,46 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.3'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.5.3'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'ru.hogwarts'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
-	implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
-	implementation("jakarta.validation:jakarta.validation-api:3.0.2")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	runtimeOnly ("org.postgresql:postgresql")
-	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.twelvemonkeys.imageio:imageio-webp:3.10.1")
+    implementation("com.twelvemonkeys.imageio:imageio-core:3.10.1")
+    implementation("com.twelvemonkeys.imageio:imageio-jpeg:3.10.1")
+
+    runtimeOnly("org.postgresql:postgresql")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.h2database:h2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+test {
+    include '**/*Test.class'
+    include '**/*Tests.class'
+    include '**/*TestRest.class'
+    include '**/*TestWebMvc.class'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
