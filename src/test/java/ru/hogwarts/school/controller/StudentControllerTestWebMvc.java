@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,7 +14,6 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
-import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collections;
@@ -42,13 +40,10 @@ public class StudentControllerTestWebMvc {
     private StudentRepository studentRepository;
 
     @MockBean
-    AvatarRepository avatarRepository;
+    private AvatarRepository avatarRepository;
 
     @SpyBean
     private StudentService studentService;
-
-    @Spy
-    private AvatarService avatarService;
 
     @Test
     @DisplayName("создание студента")

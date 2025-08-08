@@ -11,7 +11,6 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -21,7 +20,6 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
 class StudentControllerTestRest {
 
@@ -36,9 +34,6 @@ class StudentControllerTestRest {
 
     @Autowired
     private FacultyRepository facultyRepository;
-
-    @Autowired
-    private AvatarRepository avatarRepository; // временно для теста
 
     @Autowired
     private TestRestTemplate testRestTemplate;

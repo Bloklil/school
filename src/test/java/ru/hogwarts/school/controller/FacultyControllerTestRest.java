@@ -11,8 +11,7 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -28,7 +27,7 @@ public class FacultyControllerTestRest {
     private FacultyRepository facultyRepository;
 
     @BeforeEach
-    void CleanBd() {
+    void cleanBd() {
         facultyRepository.deleteAll();
     }
 
