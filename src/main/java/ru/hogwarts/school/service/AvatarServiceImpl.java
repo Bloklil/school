@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -99,4 +100,20 @@ public class AvatarServiceImpl implements AvatarService {
         return avatarRepository.findAll(pageable);
     }
 
+    @Override
+    public void writeAvatarToResponse(Long id, HttpServletResponse response) throws IOException {
+        Avatar avatar = findAvatar(id);
+
+        Path path = Path.of(avatar.getFilePath());
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(avatar.getMediaType());
+        response.setContentLength((int) avatar.getFileSize());
+
+        try (
+                InputStream is = Files.newInputStream(path);
+                OutputStream os = response.getOutputStream()
+        ) {
+            is.transferTo(os);
+        }
+    }
 }
