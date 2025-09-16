@@ -103,5 +103,4 @@ public class StudentController {
                 .parallel()
                 .reduce(0L, Long::sum);
     }
-
 }
