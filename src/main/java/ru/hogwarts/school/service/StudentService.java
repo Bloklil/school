@@ -113,4 +113,23 @@ public class StudentService {
         return studentRepository.getLastFiveStudents();
     }
 
+    public List<String> getStudentsWithA() {
+        log.info("Вызван метод получения всех студентов начинающихся с буквы А");
+
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(name -> name != null && name.toUpperCase().startsWith("А"))
+                .map(String::toUpperCase)
+                .sorted()
+                .toList();
+    }
+
+    public double getAverageAgeFromFindAll(){
+        log.info("Вызван метод для получения среднего возраста всех студентов");
+        return studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+    }
+
 }
