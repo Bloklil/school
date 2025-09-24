@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.exception.StudentNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
 import java.io.IOException;
@@ -102,5 +103,55 @@ public class StudentController {
                 .limit(1_000_000)
                 .parallel()
                 .reduce(0L, Long::sum);
+    }
+
+    @GetMapping("/students/print-parallel")
+    public void studentPrintParallel() {
+        List<Student> students = studentService.getAllStudents();
+
+        if (students.size() < 6) {
+            System.out.println("В базе меньше 6 студентов");
+            return;
+        }
+        System.out.println(Thread.currentThread().getName() + ": " + students.get(0).getName());
+        System.out.println(Thread.currentThread().getName() + ": " + students.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(2).getName());
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(3).getName());
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(4).getName());
+            System.out.println(Thread.currentThread().getName() + ": " + students.get(5).getName());
+        }).start();
+    }
+
+    private synchronized void printStudentName(String name) {
+        System.out.println(Thread.currentThread().getName() + ": " + name);
+    }
+
+    @GetMapping("/students/print-synchronized")
+    public void printStudentsSync() {
+        List<Student> students = studentService.getAllStudents();
+
+        if (students.size() < 6) {
+            System.out.println("В базе меньше 6 студентов");
+            return;
+        }
+
+        printStudentName(students.get(0).getName());
+        printStudentName(students.get(1).getName());
+
+        new Thread(() -> {
+            printStudentName(students.get(5).getName());
+            printStudentName(students.get(4).getName());
+        }).start();
+
+        new Thread(() -> {
+            printStudentName(students.get(3).getName());
+            printStudentName(students.get(2).getName());
+        }).start();
+
     }
 }
