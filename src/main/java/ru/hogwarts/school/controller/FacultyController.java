@@ -54,4 +54,10 @@ public class FacultyController {
     public List<Faculty> searchByNameOrColor(@RequestParam String query) {
         return facultyService.findByNameOrColorIgnoreCase(query);
     }
+
+    @GetMapping("/faculties/longest-name")
+    public String getLongestFacultyName(){
+        return facultyService.getLongestFacultyName();
+    }
+
 }

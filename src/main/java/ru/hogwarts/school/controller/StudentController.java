@@ -10,6 +10,7 @@ import ru.hogwarts.school.service.StudentService;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("student")
@@ -85,4 +86,21 @@ public class StudentController {
         return studentService.getLAstFiveStudents();
     }
 
+    @GetMapping("/Students/names-with-A")
+    public List<String> getStudentsNameWithA() {
+        return studentService.getStudentsWithA();
+    }
+
+    @GetMapping("/students/*average-age")
+    public double getAverageAgeAll() {
+        return studentService.getAverageAgeFromFindAll();
+    }
+
+    @GetMapping("/sum-parallel")
+    public long getSumParallel() {
+        return Stream.iterate(1L, a -> a + 1)
+                .limit(1_000_000)
+                .parallel()
+                .reduce(0L, Long::sum);
+    }
 }

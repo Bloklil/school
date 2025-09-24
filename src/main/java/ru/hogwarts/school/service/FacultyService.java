@@ -65,4 +65,13 @@ public class FacultyService {
         log.info("Вызван метод поиска факультетов по имени или цвету");
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(query, query);
     }
+
+    public String getLongestFacultyName() {
+        log.info("Вызван метод для поиска самого длинного названия факультета");
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max((name1, name2) -> Integer.compare(name1.length(), name2.length()))
+                .orElse("Факультеты отсутствуют");
+    }
+
 }
